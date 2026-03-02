@@ -3,6 +3,9 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import sqlite3
 import io
 from flask import send_file
+import random
+from flask import session, request, redirect, url_for, render_template, flash
+
 
 
 db_local = "DB.db"
@@ -225,6 +228,44 @@ def logout():
     return redirect(url_for("login"))
 
 
+
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+
+    if request.method == 'POST':
+
+        # กรณีกดส่งเบอร์
+        if "phone" in request.form:
+            phone = request.form['phone']
+
+            # สร้าง OTP 6 หลัก
+            otp = random.randint(100000, 999999)
+
+            # เก็บ OTP ไว้ใน session
+            session['otp'] = str(otp)
+            session['phone'] = phone
+
+            print("OTP คือ:", otp)  # ตอนนี้ยังไม่ส่ง SMS จริง แค่โชว์ใน console
+
+            flash("OTP ถูกส่งไปยังเบอร์ของคุณแล้ว")
+            return redirect(url_for('forgot_password'))
+
+        # กรณีกดตรวจสอบ OTP
+        elif "otp_input" in request.form:
+            otp_input = request.form['otp_input']
+
+            if otp_input == session.get('otp'):
+                return redirect(url_for('reset_password'))
+            else:
+                flash("OTP ไม่ถูกต้อง กรุณาลองใหม่")
+                return redirect(url_for('forgot_password'))
+
+    return render_template('forgot_password.html')
+
+@app.route('/reset_password')
+def reset_password():
+    return "<h1>เปลี่ยนรหัสผ่านได้ตรงนี้ (ทำต่อได้เลย)</h1>"
 
 # ==============================
 # เพิ่ม user (ของเดิม ปรับให้ปลอดภัย)

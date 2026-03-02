@@ -23,17 +23,27 @@
           <a href="#" class="hover:underline">Me</a>
           <a href="/dashboard" class="hover:underline">Home</a>
           <a href="/contact" class="hover:underline">About</a>
-          <a href="/logout" class="hover:underline text-red-300">Logout</a>
+ 
         </nav>
 
         <div class="bg-white p-2 rounded-full">
-          <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
-               class="w-6 h-6 rounded-full object-cover">
-        </div>
+  <img src="{{ url_for('static', filename='image/person2.jpg') }}"
+       class="w-8 h-8 rounded-full object-cover">
+</div>
       </div>
     </header>
-<!-- Time Remaining -->
-<section class="flex justify-end items-center px-12 mt-6">
+<!-- Welcome + Time Remaining -->
+<section class="flex justify-between items-center px-12 mt-9">
+
+  <!-- Welcome -->
+  <div>
+    <h2 class="text-5xl font-bold">Welcome</h2>
+    <p class="text-3xl font-semibold text-gray-700">
+      To The KKU Internet Cafe'
+    </p>
+  </div>
+
+  <!-- Time Remaining -->
   <div class="text-right">
     <p class="text-lg font-semibold text-gray-700">
       Time Remaining
@@ -42,19 +52,12 @@
       0 : 0 : 0
     </p>
   </div>
+
 </section>
-    
-    <!-- Welcome Section -->
-    <section class="ml-20 mt-8">
-      <h2 class="text-5xl font-bold">Welcome</h2>
-      <p class="text-3xl font-semibold text-gray-700">
-        To The KKU Internet Cafe'
-      </p>
-    </section>
 
 
     <!-- Main Card -->
-    <section class="max-w-7xl mx-auto mt-8 bg-white shadow-lg rounded-3xl overflow-hidden">
+    <section class="max-w-7xl mx-auto mt-16 bg-white shadow-lg rounded-3xl overflow-hidden">
 
       <!-- Banner -->
 <div class="relative">
@@ -66,7 +69,7 @@
             Your Digital Playground
           </h3>
 
-          <p class="text-4xl font-bold mt-2 hover:scale-105 transition">
+          <p class="text-4xl font-bold mt-5 hover:scale-105 transition">
             User : {{ username }}
           </p>
         </div>
