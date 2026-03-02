@@ -20,16 +20,16 @@
 
       <div class="flex items-center gap-6">
         <nav class="space-x-4 hidden sm:block">
-          <a href="#" class="hover:underline">Me</a>
+          <a href="/profile" class="hover:underline">Me</a>
           <a href="/dashboard" class="hover:underline">Home</a>
           <a href="/contact" class="hover:underline">About</a>
  
         </nav>
 
-        <div class="bg-white p-2 rounded-full">
+        <a href="/profile" class="bg-white p-2 rounded-full block hover:scale-105 transition">
   <img src="{{ url_for('static', filename='image/person2.jpg') }}"
        class="w-8 h-8 rounded-full object-cover">
-</div>
+</a>
       </div>
     </header>
 <!-- Welcome + Time Remaining -->
@@ -82,7 +82,7 @@
         <!-- Profile -->
         <div class="bg-gray-400 shadow-md rounded-lg text-center p-4 hover:shadow-lg hover:scale-105 transition">
           <p class="font-semibold mb-4">Profile</p>
-          <a href="#" class="bg-indigo-800 text-white px-4 py-2 rounded-lg font-bold">
+         <a href="/profile" class="bg-indigo-800 text-white px-4 py-2 rounded-lg font-bold inline-block">
             VIEW
           </a>
         </div>

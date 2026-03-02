@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KKU Interne Cafe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body
+    class="min-h-screen bg-cover bg-center"
+    style="
+      background-image: url(&quot;https://images.unsplash.com/photo-1492724441997-5dc865305da7&quot;);
+    "
+  >
+    <!-- Navbar -->
+    <header
+      class="bg-indigo-900 text-white flex justify-between items-center px-8 py-6 shadow-lg rounded-b-2xl"
+    >
+      <h1 class="text-lg font-semibold">KKU Internet Cafe'</h1>
+
+      <div class="flex items-center gap-6">
+        <nav class="space-x-4 hidden sm:block">
+          <a href="#" class="hover:underline">Me</a>
+          <a href="/dashboard" class="hover:underline">Home</a>
+          <a href="/contact" class="hover:underline">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Center Card -->
+    <div class="flex items-center justify-center py-20">
+      <div
+        class="bg-white/95 backdrop-blur-md w-full max-w-xl rounded-2xl shadow-2xl p-10 text-center"
+      >
+        <!-- Profile Image -->
+        <div class="flex justify-center -mt-20 mb-6">
+          <div
+            class="w-28 h-28 bg-indigo-700 rounded-full flex items-center justify-center border-4 border-white shadow-lg"
+          >
+           <img
+  src="{{ url_for('static', filename='image/person2.jpg') }}"
+  alt="person"
+  class="w-full h-full object-cover rounded-full"
+/>
+          </div>
+        </div>
+
+        <hr class="mb-6" />
+
+        <!-- Inputs -->
+        <div class="space-y-4 text-left">
+          <div>
+            <label class="text-sm text-gray-600">Username</label>
+            <input
+  type="text"
+  value="{{ username }}"
+  readonly
+  class="w-full mt-1 p-3 rounded-lg bg-gray-200"
+/>
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-600">Point คงเหลือ</label>
+            <input
+              type="text"
+              value="100"
+              class="w-full mt-1 p-3 rounded-lg bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-600">TEL</label>
+            <input
+              type="text"
+              value="099-xxx-xxxx"
+              class="w-full mt-1 p-3 rounded-lg bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
+          </div>
+        </div>
+
+        <div class="mt-6">
+  <a href="{{ url_for('change_password') }}"
+     class="text-indigo-600 font-medium hover:text-indigo-800 hover:underline transition">
+     Change Password
+  </a>
+</div>
+        <!-- Buttons -->
+        <div class="flex justify-center gap-6 mt-8">
+          <a href="{{ url_for('dashboard') }}"
+   class="px-6 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 inline-block">
+  Back
+</a>
+
+          <button
+            onclick="openConfirm()"
+            class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      function openConfirm() {
+        Swal.fire({
+          title: "คุณแน่ใจหรือไม่?",
+          text: "คุณต้องการออกจากระบบใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ตกลง",
+          cancelButtonText: "ยกเลิก",
+          confirmButtonColor: "#2563eb",
+          cancelButtonColor: "#6b7280",
+          backdrop: "rgba(0, 0, 0, 0.6)",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // แจ้งสำเร็จ
+            Swal.fire({
+              icon: "success",
+              title: "ล็อคเอาท์เสร็จสิ้น",
+              text: "ระบบทำการออกจากระบบเรียบร้อยแล้ว",
+              width: 600,
+              padding: "0.8rem",
+              confirmButtonColor: "#2563eb",
+              backdrop: "rgba(0, 0, 0, 0.6)",
+              customClass: {
+                popup: "rounded-2xl",
+                title: "text-xl",
+                confirmButton: "px-6 py-2 rounded-lg",
+              },
+            }).then(() => {
+              // เปลี่ยนเส้นทางหน้า
+              window.location.href = "{{ url_for('logout') }}";
+              // ถ้าใช้ route แบบ Laravel/Node เปลี่ยนเป็น "/dashboard" ได้
+            });
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

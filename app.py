@@ -96,12 +96,12 @@ def upload_qr():
         <label>เลือกราคา:</label><br><br>
         <select name="price">
             <option value="">-- Select Price --</option>
-            <option value="50">50 บาท</option>
+            <option value="20">20 บาท</option>
+            <option value="40">40 บาท</option>
+            <option value="60">60 บาท</option>
+            <option value="80">80 บาท</option>
             <option value="100">100 บาท</option>
-            <option value="150">150 บาท</option>
-            <option value="200">200 บาท</option>
-            <option value="250">250 บาท</option>
-            <option value="300">300 บาท</option>
+            <option value="120">120 บาท</option>
         </select>
         <br><br>
 
@@ -227,7 +227,41 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
 
+    if request.method == "POST":
+        old_password = request.form.get("old_password")
+        new_password = request.form.get("new_password")
+
+        connect = sqlite3.connect(db_local)
+        cursor = connect.cursor()
+
+        # ตรวจสอบรหัสเดิมก่อน
+        cursor.execute(
+            "SELECT * FROM users WHERE username = ? AND password = ?",
+            (current_user.id, old_password)
+        )
+
+        user = cursor.fetchone()
+
+        if user:
+            cursor.execute(
+                "UPDATE users SET password = ? WHERE username = ?",
+                (new_password, current_user.id)
+            )
+            connect.commit()
+            connect.close()
+
+            flash("เปลี่ยนรหัสผ่านสำเร็จ")
+            return redirect(url_for("profile"))
+
+        else:
+            connect.close()
+            flash("รหัสผ่านเดิมไม่ถูกต้อง")
+
+    return render_template("change_password.html")
 
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -299,27 +333,27 @@ def credit():
 
         if selected_time == "30min":
             hour_text = "30 นาที"
-            price = 50
+            price = 20
 
         elif selected_time == "1hour":
             hour_text = "1 ชั่วโมง"
-            price = 100
+            price = 40
 
         elif selected_time == "1_30":
             hour_text = "1 ชั่วโมง 30 นาที"
-            price = 150
+            price = 60
 
         elif selected_time == "2hour":
             hour_text = "2 ชั่วโมง"
-            price = 200
+            price = 80
 
         elif selected_time == "2_30":
             hour_text = "2 ชั่วโมง 30 นาที"
-            price = 250
+            price = 100
 
         elif selected_time == "3hour":
             hour_text = "3 ชั่วโมง"
-            price = 300
+            price = 120
 
         else:
             flash("กรุณาเลือกแพ็คเกจ")
@@ -399,6 +433,66 @@ def create_message_table():
 
 create_message_table()
 
+
+# ==============================
+# หน้า Profile
+# ==============================
+@app.route("/profile")
+@login_required
+def profile():
+    return render_template("profile.html", username=current_user.id)
+
+
+#==================================   ส่วนของ admin ฟังก์ชัน ดูข้อความจาก users.   ===============================================
+# ==============================
+# หน้า Admin ดูข้อความลูกค้า
+# ==============================
+@app.route("/admin_messages")
+def admin_messages():
+
+    connect = sqlite3.connect(db_local)
+    cursor = connect.cursor()
+
+    cursor.execute("""
+    SELECT id, username, message, created_at
+    FROM messages
+    ORDER BY created_at DESC
+""")
+
+    all_messages = cursor.fetchall()
+    connect.close()
+
+    return render_template(
+        "admin_messages.html",
+        messages=all_messages
+    )
+    
+    
+# ==============================
+# ลบข้อความ
+# ==============================
+@app.route("/delete_message/<int:msg_id>")
+def delete_message(msg_id):
+
+    connect = sqlite3.connect(db_local)
+    cursor = connect.cursor()
+
+    # เช็คก่อนว่ามีข้อความนี้จริงไหม
+    cursor.execute("SELECT id FROM messages WHERE id = ?", (msg_id,))
+    message = cursor.fetchone()
+
+    if message:
+        cursor.execute("DELETE FROM messages WHERE id = ?", (msg_id,))
+        connect.commit()
+        connect.close()
+        flash("ลบข้อความเรียบร้อยแล้ว")
+    else:
+        connect.close()
+        flash("ไม่พบข้อความนี้")
+
+    return redirect(url_for("admin_messages"))
+
+# ===============================================.  ของ addmin จบตรงนี้   ================================================
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)  
