@@ -5,6 +5,7 @@ import io
 from flask import send_file
 import random
 from flask import session, request, redirect, url_for, render_template, flash
+from flask import request, jsonify
 
 
 
@@ -374,42 +375,18 @@ def credit():
 # ==============================
 # หน้า Contact
 # ==============================
-@app.route("/contact", methods=["GET", "POST"])
-@login_required
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
+    if request.method == 'POST':
 
-    if request.method == "POST":
+        data = request.get_json()
+        message = data.get('message')
 
-        message = request.form.get("message")
+        # บันทึกลง database ตรงนี้
 
-        # เช็คว่ากรอกข้อความไหม
-        if message:
+        return jsonify({"status": "success"})
 
-            connect = sqlite3.connect(db_local)
-            cursor = connect.cursor()
-
-            cursor.execute(
-                "INSERT INTO messages (username, message) VALUES (?, ?)",
-                (current_user.id, message)
-            )
-
-            connect.commit()
-            connect.close()
-
-            # ส่ง success=True ไปหน้า html
-            return render_template(
-                "contact.html",
-                username=current_user.id,
-                success=True
-            )
-
-        else:
-            flash("กรุณากรอกข้อความก่อนส่ง")
-
-    return render_template(
-        "contact.html",
-        username=current_user.id
-    )
+    return render_template("contact.html")
 
 
 # ==============================

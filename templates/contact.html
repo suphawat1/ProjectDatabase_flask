@@ -39,13 +39,14 @@
 <!-- ===== Content Section ===== -->
 <section class="max-w-5xl mx-auto py-20 px-10 text-gray-800">
 
-    <h3 class="text-3xl text-center font-serif font-semibold mb-16">
+<div class="text-xl space-y-4 leading-relaxed mb-16 
+            border border-gray-300 rounded-xl p-8 bg-white shadow-md">
         We’re here to help, just get in touch anytime you need support.
     </h3>
 
     <div class="text-xl space-y-4 leading-relaxed mb-16">
         <p>Let us know if you have any questions or concerns.</p>
-        <p>Contact us anytime:</p>
+        <p>Contact us anytime</p>
         <p>
     Our Facebook Page :
     <a href="https://www.facebook.com/computing.kku"
@@ -70,7 +71,7 @@
             Send us a message
         </h4>
 
-        <form method="POST" action="/contact" class="space-y-4">
+       <form id="contactForm" class="space-y-4">
 
             <textarea name="message" required
                 class="w-full border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-blue-500"
@@ -90,30 +91,50 @@
 </section>
 
 <!-- ===== SweetAlert Success ===== -->
-{% if success %}
 <script>
-Swal.fire({
+document.getElementById("contactForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let message = document.querySelector("textarea[name='message']").value;
+
+    fetch("/contact", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: message
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.status === "success") {
+
+            Swal.fire({
     icon: 'success',
     title: 'ส่งข้อความสำเร็จ!',
-    text: 'ทีมงานจะติดต่อกลับโดยเร็วที่สุดจ้าาา',
+    text: 'ทีมงานได้รับเรื่องแล้ว และจะตรวจสอบโดยเร็วที่สุด',
 
-    width: 600,
-    padding: '0.8rem',
+    width: '600px',          // 👈 ใส่ px ให้ชัดเจน
+    padding: '1rem',         // 👈 เพิ่มนิดนึงให้ไม่แน่นเกิน
     confirmButtonColor: '#2563eb',
-    backdrop: 'rgba(0, 0, 0, 0.6)',
+    backdrop: 'rgba(0, 0, 0, 0.7)',
 
     customClass: {
         popup: 'rounded-xl',
         title: 'text-lg',
         confirmButton: 'px-6 py-2'
     }
-}).then((result) => {
-    if (result.isConfirmed) {
-        window.location.href = "/dashboard";
-    }
+});
+
+            // ล้างข้อความ
+            document.querySelector("textarea[name='message']").value = "";
+        }
+
+    });
 });
 </script>
-{% endif %}
 
 </body>
 </html>
